@@ -63,7 +63,7 @@ def create_filtered_list_from_key_dict(dict_keys: dict):
 
 
 def save_key_in(key_filename: str, key: bytes):
-    """ Сохраняем ключ в файл (естественно, в бинарном представлении) """
+    """ Сохраняем ключ в файл в bytes представлении """
     try:
         key_file = open(key_filename, "wb")
         try:

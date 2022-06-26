@@ -11,7 +11,9 @@ if __name__ == '__main__':
         is_decrypted, key = decrypt_as_png_with_potential_keys('resources/encr_010', keys)
         if is_decrypted:
             print("Файл успешно дешифрован!")
-            print(f'Ключ шифрования: {key}')
+            # Переводим ключ из bytes в hex
+            hex_key = bytes.hex(key)
+            print(f'Ключ шифрования в hex представлении: {hex_key}')
 
             # Записываем ключ в бинарный файл key.bin для последующей работы.
             save_key_in('output_1/key.bin', key)
