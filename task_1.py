@@ -18,6 +18,39 @@ def _entropy(labels: bytearray):
     return - np.sum(probs * np.log(probs)) / np.log(n_classes)
 
 
+def _save_decrypted_data_as_png(filename: str, decrypted_data: bytes):
+    """ Сохраняем данные в .png файл (естественно, в бинарном представлении) """
+    try:
+        file = open(filename, "wb")
+        try:
+            file.write(decrypted_data)
+        finally:
+            file.close()
+    except FileNotFoundError:
+        print("Невозможно открыть файл")
+
+
+def _from_hex_chunks_to_bytes(hex_chunks: list):
+    """ Переводим из hex list в bytes """
+    str_hex_chunks = ""
+    for hex_chunk in hex_chunks:
+        str_hex_chunks += str(hex_chunk)
+    return bytes.fromhex(str_hex_chunks)
+
+
+def _check_for_png(decrypted_data: bytes):
+    """ Проверяем сигнатуру decrypted_data на .png файл """
+    png_hex_chunks = ['89', '50', '4E', '47', '0D', '0A', '1A', '0A']
+    png_bytes_chunks: bytes = _from_hex_chunks_to_bytes(png_hex_chunks)
+
+    print(decrypted_data)
+    print(png_bytes_chunks)
+
+    if png_bytes_chunks == decrypted_data[:8]:
+        return True
+    return False
+
+
 def read_keys_from(dump_filename: str):
     """ Находим все потенциальные 128-битные ключи шифрования, которые встречаются в .DMP. Записываем их в словарь """
     keys_count = {}
@@ -72,39 +105,6 @@ def save_key_in(key_filename: str, key: bytes):
             key_file.close()
     except FileNotFoundError:
         print("Невозможно открыть файл")
-
-
-def _save_decrypted_data_as_png(filename: str, decrypted_data: bytes):
-    """ Сохраняем данные в .png файл (естественно, в бинарном представлении) """
-    try:
-        file = open(filename, "wb")
-        try:
-            file.write(decrypted_data)
-        finally:
-            file.close()
-    except FileNotFoundError:
-        print("Невозможно открыть файл")
-
-
-def _from_hex_chunks_to_bytes(hex_chunks: list):
-    """ Переводим из hex list в bytes """
-    str_hex_chunks = ""
-    for hex_chunk in hex_chunks:
-        str_hex_chunks += str(hex_chunk)
-    return bytes.fromhex(str_hex_chunks)
-
-
-def _check_for_png(decrypted_data: bytes):
-    """ Проверяем сигнатуру decrypted_data на .png файл """
-    png_hex_chunks = ['89', '50', '4E', '47', '0D', '0A', '1A', '0A']
-    png_bytes_chunks: bytes = _from_hex_chunks_to_bytes(png_hex_chunks)
-
-    print(decrypted_data)
-    print(png_bytes_chunks)
-
-    if png_bytes_chunks == decrypted_data[:8]:
-        return True
-    return False
 
 
 def decrypt_as_png_with_potential_keys(encr_filename: str, keys_list: list):
