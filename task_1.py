@@ -124,6 +124,8 @@ def decrypt_as_png_with_potential_keys(encr_filename: str, keys_list: list):
             plaintext = obj.decrypt(ciphertext)
             if _check_for_png(plaintext):
                 # После проверки дешифрации первого блока данных можно дешифровать весь encr_10.
+                # Смещаем указатель в начало файла.
+                file.seek(0)
                 ciphertext = file.read()
                 plaintext = obj.decrypt(ciphertext)
 
