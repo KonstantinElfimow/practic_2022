@@ -1,6 +1,7 @@
 from task_1 import read_keys_from, create_filtered_list_from_key_dict, decrypt_as_png_with_potential_keys, save_key_in
 
 if __name__ == '__main__':
+    """ Task 1 """
     # Формируем словарь (ключ - частота встречаемости).
     dict_keys = read_keys_from('resources/dump_010.DMP')
     # Далее отсеиваем все ключи, которые встречаются реже 2 раз.
@@ -21,3 +22,5 @@ if __name__ == '__main__':
             print("Не удалось дешифровать файл")
     else:
         print("Ключи отсутствуют")
+
+    """ Task 2 """
