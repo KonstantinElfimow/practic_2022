@@ -1,4 +1,5 @@
 from task_1 import read_keys_from, create_filtered_list_from_key_dict, decrypt_as_png_with_potential_keys, save_key_in
+from task_2 import decode_from_png_to_jpeg
 
 if __name__ == '__main__':
     """ Task 1 """
@@ -24,3 +25,4 @@ if __name__ == '__main__':
         print("Ключи отсутствуют")
 
     """ Task 2 """
+    decode_from_png_to_jpeg('output_1/decrypted_PNG.png')

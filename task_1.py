@@ -20,14 +20,11 @@ def _entropy(labels: bytearray):
 
 def _save_decrypted_data_as_png(filename: str, decrypted_data: bytes):
     """ Сохраняем данные в .png файл (естественно, в бинарном представлении) """
-    try:
-        file = open(filename, "wb")
+    with open(filename, "wb") as file:
         try:
             file.write(decrypted_data)
         finally:
             file.close()
-    except FileNotFoundError:
-        print("Невозможно открыть файл")
 
 
 def _from_hex_chunks_to_bytes(hex_chunks: list):
@@ -42,9 +39,6 @@ def _check_for_png(decrypted_data: bytes):
     """ Проверяем сигнатуру decrypted_data на .png файл """
     png_hex_chunks = ['89', '50', '4E', '47', '0D', '0A', '1A', '0A']
     png_bytes_chunks: bytes = _from_hex_chunks_to_bytes(png_hex_chunks)
-
-    print(decrypted_data)
-    print(png_bytes_chunks)
 
     if png_bytes_chunks == decrypted_data[:8]:
         return True
@@ -75,7 +69,7 @@ def read_keys_from(dump_filename: str):
                 # поэтому ключи будут обладать определенными свойствами,
                 # такими как высокая энтропия, близкая к равномерному
                 # закону распределения двоичных разрядов ключа
-                if _entropy(key_array) > 0.98:
+                if _entropy(key_array) > 0.99:
                     # Если энтропия ключа достаточно высокая и удовлетворяет условию,
                     # то запоминаем этот ключ и запоминаем его частоту встречаемости в файле.
                     # Конкретно нам будет интересна частота 2 (по условию задачи).
@@ -97,14 +91,11 @@ def create_filtered_list_from_key_dict(dict_keys: dict):
 
 def save_key_in(key_filename: str, key: bytes):
     """ Сохраняем ключ в файл в bytes представлении """
-    try:
-        key_file = open(key_filename, "wb")
+    with open(key_filename, "wb") as key_file:
         try:
             key_file.write(key)
         finally:
             key_file.close()
-    except FileNotFoundError:
-        print("Невозможно открыть файл")
 
 
 def decrypt_as_png_with_potential_keys(encr_filename: str, keys_list: list):
@@ -130,7 +121,7 @@ def decrypt_as_png_with_potential_keys(encr_filename: str, keys_list: list):
                 plaintext = obj.decrypt(ciphertext)
 
                 # Сохранить оригинальный файл.
-                filename_d = 'output_1/decrypted_image.png'
+                filename_d = 'output_1/decrypted_PNG.png'
                 _save_decrypted_data_as_png(filename_d, plaintext)
                 return True, session_key
     finally:
