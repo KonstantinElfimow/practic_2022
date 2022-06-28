@@ -2,7 +2,7 @@ from task_1 import read_keys_from, create_filtered_list_from_key_dict, decrypt_p
 from task_2 import decode_from_png_to_jpeg
 
 if __name__ == '__main__':
-    """ Task 1 """
+    """ Task 1 
     # Формируем словарь (ключ - частота встречаемости).
     dump_filename = 'resources/dump_010.DMP'
     dict_keys = read_keys_from(dump_filename)
@@ -21,8 +21,8 @@ if __name__ == '__main__':
             key_filename = 'output_1/key.bin'
             save_binary_data(key_filename, key)
             # Сохранить оригинальный файл.
-            filename_d = 'output_1/decrypted_PNG.png'
-            save_binary_data(filename_d, plaintext)
+            png_filename = 'output_1/decrypted_PNG.png'
+            save_binary_data(png_filename, plaintext)
 
             # Переводим ключ из bytes в hex
             hex_key = bytes.hex(key)
@@ -34,5 +34,8 @@ if __name__ == '__main__':
         print("Ключи отсутствуют")
         exit(0)
 
-    """ Task 2 """
-    ##decode_from_png_to_jpeg('output_1/decrypted_PNG.png')
+    Task 2 """
+
+    png_filename = 'output_1/decrypted_PNG.png'
+    jpeg_filename = 'output_2/decoded_JPEG.jpg'
+    decode_from_png_to_jpeg(png_filename, jpeg_filename)
