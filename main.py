@@ -80,7 +80,7 @@ def task_3():
     password = decode_password_from_jpeg_with_aes_cbc(jpeg_filename, key)
 
     # Выводим пароль.
-    print(f'Пароль: {password}')
+    print(f'Пароль: {str(password)}')
 
     # Сохраняем пароль.
     password_filename = 'output_3/password.bin'

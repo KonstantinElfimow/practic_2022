@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+
 """
   Name  : CRC-8
   Poly  : 0x1D 
@@ -36,24 +37,23 @@ def _crc8(pc_block: bytes) -> int:
     return crc ^ 0xFF
 
 
-# jpeg_signature: list = list(b'\xff\xd8\xff\xe0')  # '0xff', '0xd8', '0xff', '0xe0'
-
-
 """Тест на корректность алгоритма crc8 """
-#word = bytes('password', 'utf-8')
-#crc8 = _crc8(word).to_bytes(length=1, byteorder="big", signed=False)
-#print(crc8)
-#exit(0)
+# word = bytes('password', 'utf-8')
+# crc8 = _crc8(word).to_bytes(length=1, byteorder="big", signed=False)
+# print(crc8)
+# exit(0)
 
 
 def decode_data_from_file_with_crc8(png_filename: str) -> bytes:
-    # получим 3-мерную матрицу RGB из decrypted_PNG.png
+    # Получим 3-мерную матрицу RGB из decrypted_PNG.png
     img = Image.open(png_filename).convert('RGB')
-    matrix = np.asarray(img, dtype=np.uint8)
+    matrix = np.asarray(img, dtype=np.uint32)
     img.close()
 
     # высота, ширина, rgb
     height, width, _rgb = matrix.shape
+
+    # Результат
     ba_rec = bytes()
 
     for y in range(height):
@@ -61,17 +61,17 @@ def decode_data_from_file_with_crc8(png_filename: str) -> bytes:
         for x in range(width):
             p = line[x]
 
-            # формируем целое на основе трех байт rgb (старший байт будет нулевым)
+            # Формируем целое на основе трех байт.
             color = p[0]  # r
             color = (color << 8) | p[1]  # rg
             color = (color << 8) | p[2]  # rgb
 
-            b_color = int(color).to_bytes(length=3, byteorder="big", signed=False)
-            print(color, b_color)
-            ba = _crc8(b_color)
-            print(hex(ba))
-            ba = ba.to_bytes(length=1, byteorder="big", signed=False)
+            # Переводим color в bytes (причём читаем color с младшего разряда)
+            b_color = int(color).to_bytes(length=4, byteorder="little", signed=False)
 
-            ba_rec += ba
+            # Формируем на выходе функции _crc8() однобайтовое значение.
+            # И в конце записываем очередной байт в результирующий байтовый массив baRec,
+            # который позже сохраним в бинарном режиме и должны получить JPEG.
+            ba_rec += _crc8(b_color).to_bytes(length=1, byteorder="big", signed=False)
 
     return ba_rec

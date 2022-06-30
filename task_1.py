@@ -81,6 +81,8 @@ def decrypt_pngfile_with_aes_ecb(filename: str, potential_keys: list):
             CHUNKSIZE: int = 16
             # Прочитаем первый блок данных размером 16 байт.
             ciphertext = file.read(CHUNKSIZE)
+            # Смещаем указатель в начало файла.
+            file.seek(0)
             for session_key in potential_keys:
 
                 # Нас интересует каким образом session_key дешифрует первый блок данных из encr_10.
@@ -90,8 +92,6 @@ def decrypt_pngfile_with_aes_ecb(filename: str, potential_keys: list):
                 plaintext = obj.decrypt(ciphertext)
                 if _check_for_png(plaintext):
                     # После проверки дешифрации первого блока данных можно дешифровать весь encr_10.
-                    # Смещаем указатель в начало файла.
-                    file.seek(0)
                     ciphertext = file.read()
                     plaintext = obj.decrypt(ciphertext)
 
