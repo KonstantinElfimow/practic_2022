@@ -70,7 +70,7 @@ def decode_data_from_file_with_crc8(png_filename: str) -> bytes:
             b_color = int(color).to_bytes(length=4, byteorder="little", signed=False)
 
             # Формируем на выходе функции _crc8() однобайтовое значение.
-            # И в конце записываем очередной байт в результирующий байтовый массив baRec,
+            # И в конце записываем очередной байт в результирующий байтовый массив ba_rec,
             # который позже сохраним в бинарном режиме и должны получить JPEG.
             ba_rec += _crc8(b_color).to_bytes(length=1, byteorder="big", signed=False)
 
