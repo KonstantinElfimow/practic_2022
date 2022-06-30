@@ -1,7 +1,8 @@
 from task_1 import read_keys_from, create_filtered_list_from_key_dict, decrypt_pngfile_with_aes_ecb, save_binary_data
 from task_2 import decode_from_png_to_jpeg_with_crc8
 
-if __name__ == '__main__':
+
+def task_1():
     """ Task 1 """
     # Формируем словарь (ключ - частота встречаемости).
     dump_filename = 'resources/dump_010.DMP'
@@ -34,8 +35,15 @@ if __name__ == '__main__':
         print("Ключи отсутствуют")
         exit(0)
 
-    """ Task 2 """
 
+def task_2():
+    """ Task 2 """
     png_filename = 'output_1/decrypted_PNG.png'
     jpeg_filename = 'output_2/decoded_JPEG.jpg'
     decode_from_png_to_jpeg_with_crc8(png_filename, jpeg_filename)
+
+
+if __name__ == '__main__':
+    # task_1()
+    task_2()
+

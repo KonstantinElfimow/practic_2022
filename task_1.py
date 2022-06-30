@@ -18,20 +18,12 @@ def _entropy(labels: bytearray):
     return - np.sum(probs * np.log(probs)) / np.log(n_classes)
 
 
-def _from_hex_chunks_to_bytes(hex_chunks: list):
-    """ Переводим из hex list в bytes """
-    str_hex_chunks = ""
-    for hex_chunk in hex_chunks:
-        str_hex_chunks += str(hex_chunk)
-    return bytes.fromhex(str_hex_chunks)
+_png_signature: bytes = b'\x89PNG\r\n\x1a\n'  # '0x89', '0x50', '0x4E', '0x47', '0x0D', '0x0A', '0x1A', '0x0A'
 
 
 def _check_for_png(decrypted_data: bytes):
     """ Проверяем сигнатуру decrypted_data на .png файл """
-    png_hex_chunks = ['89', '50', '4E', '47', '0D', '0A', '1A', '0A']
-    png_bytes_chunks: bytes = _from_hex_chunks_to_bytes(png_hex_chunks)
-
-    if png_bytes_chunks == decrypted_data[:8]:
+    if _png_signature == decrypted_data[:8]:
         return True
     return False
 
@@ -81,13 +73,14 @@ def create_filtered_list_from_key_dict(dict_keys: dict):
     return filtered_k
 
 
-def save_binary_data(filename: str, key: bytes):
+def save_binary_data(filename: str, data: bytes):
     """ Сохраняем данные в файл в байтовом представлении """
-    with open(filename, "wb") as key_file:
+    with open(filename, "wb") as file:
         try:
-            key_file.write(key)
+            file.write(data)
+            file.seek(0)
         finally:
-            key_file.close()
+            file.close()
 
 
 def decrypt_pngfile_with_aes_ecb(filename: str, potential_keys: list):

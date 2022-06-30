@@ -1,6 +1,5 @@
 import numpy as np
 from PIL import Image
-
 """
   Name  : CRC-8
   Poly  : 0x1D 
@@ -37,10 +36,20 @@ def _crc8(pc_block: bytes) -> int:
     return crc ^ 0xFF
 
 
+jpeg_signature: list = list(b'\xff\xd8\xff\xe0')  # '0xff', '0xd8', '0xff', '0xe0'
+
+
+"""Тест на корректность алгоритма crc8 """
+#word = bytes('password', 'utf-8')
+#crc8 = _crc8(word).to_bytes(length=1, byteorder="big", signed=False)
+#print(crc8)
+#exit(0)
+
+
 def decode_from_png_to_jpeg_with_crc8(png_filename: str, jpeg_filename: str) -> None:
     # получим 3-мерную матрицу RGB из decrypted_PNG.png
     img = Image.open(png_filename).convert('RGB')
-    matrix = np.asarray(img)
+    matrix = np.asarray(img, dtype=np.uint8)
     img.close()
 
     # высота, ширина, rgb
@@ -56,11 +65,15 @@ def decode_from_png_to_jpeg_with_crc8(png_filename: str, jpeg_filename: str) -> 
             color = p[0]  # r
             color = (color << 8) | p[1]  # rg
             color = (color << 8) | p[2]  # rgb
-            # b_color = int(color).to_bytes(length=4, byteorder="big", signed=True)
-            # print(b_color)
-            # ba_rec.append(_crc8(b_color).to_bytes(length=1, byteorder="big", signed=False))
+
+            b_color = int(color).to_bytes(length=3, byteorder="big", signed=False)
+            print(color, b_color)
+            ba = _crc8(b_color)
+            print(hex(ba))
+            ba = ba.to_bytes(length=1, byteorder="big", signed=False)
+
+            ba_rec.append(ba)
 
     with open(jpeg_filename, "wb") as file:
         for ba in ba_rec:
-            print(ba)
             file.write(ba)
