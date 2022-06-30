@@ -2,7 +2,7 @@ from Crypto.Cipher import AES
 import numpy as np
 
 
-def _entropy(labels: bytearray):
+def _entropy(labels: bytearray) -> int:
     """ Вычисление энтропии вектора из 0-1 """
     n_labels = len(labels)
 
@@ -21,14 +21,14 @@ def _entropy(labels: bytearray):
 _png_signature: bytes = b'\x89PNG\r\n\x1a\n'  # '0x89', '0x50', '0x4E', '0x47', '0x0D', '0x0A', '0x1A', '0x0A'
 
 
-def _check_for_png(decrypted_data: bytes):
+def _check_for_png(decrypted_data: bytes) -> bool:
     """ Проверяем сигнатуру decrypted_data на .png файл """
     if _png_signature == decrypted_data[:8]:
         return True
     return False
 
 
-def read_keys_from(dump_filename: str):
+def read_keys_from(dump_filename: str) -> dict:
     """ Находим все потенциальные 128-битные ключи шифрования, которые встречаются в .DMP. Записываем их в словарь """
     keys_count = {}
     try:
@@ -64,23 +64,13 @@ def read_keys_from(dump_filename: str):
     return keys_count
 
 
-def create_filtered_list_from_key_dict(dict_keys: dict):
-    """ Фильтруем ключи, которые встречаются дважды. Записываем их в новый список """
+def filter_keys_by_frequency(dict_keys: dict, frequency: int) -> list:
+    """ Фильтруем ключи, которые встречаются с определённой частотой. Записываем их в новый список """
     filtered_k = []
     for k, v in dict_keys.items():
         if v == 2:
             filtered_k.append(k)
     return filtered_k
-
-
-def save_binary_data(filename: str, data: bytes):
-    """ Сохраняем данные в файл в байтовом представлении """
-    with open(filename, "wb") as file:
-        try:
-            file.write(data)
-            file.seek(0)
-        finally:
-            file.close()
 
 
 def decrypt_pngfile_with_aes_ecb(filename: str, potential_keys: list):

@@ -36,7 +36,7 @@ def _crc8(pc_block: bytes) -> int:
     return crc ^ 0xFF
 
 
-jpeg_signature: list = list(b'\xff\xd8\xff\xe0')  # '0xff', '0xd8', '0xff', '0xe0'
+# jpeg_signature: list = list(b'\xff\xd8\xff\xe0')  # '0xff', '0xd8', '0xff', '0xe0'
 
 
 """Тест на корректность алгоритма crc8 """
@@ -46,7 +46,7 @@ jpeg_signature: list = list(b'\xff\xd8\xff\xe0')  # '0xff', '0xd8', '0xff', '0xe
 #exit(0)
 
 
-def decode_from_png_to_jpeg_with_crc8(png_filename: str, jpeg_filename: str) -> None:
+def decode_data_from_file_with_crc8(png_filename: str) -> bytes:
     # получим 3-мерную матрицу RGB из decrypted_PNG.png
     img = Image.open(png_filename).convert('RGB')
     matrix = np.asarray(img, dtype=np.uint8)
@@ -54,7 +54,7 @@ def decode_from_png_to_jpeg_with_crc8(png_filename: str, jpeg_filename: str) -> 
 
     # высота, ширина, rgb
     height, width, _rgb = matrix.shape
-    ba_rec = []
+    ba_rec = bytearray()
 
     for y in range(height):
         line = matrix[y]
@@ -70,8 +70,6 @@ def decode_from_png_to_jpeg_with_crc8(png_filename: str, jpeg_filename: str) -> 
             print(hex(ba))
             ba = ba.to_bytes(length=1, byteorder="big", signed=False)
 
-            ba_rec.append(ba)
+            ba_rec.extend(ba)
 
-    with open(jpeg_filename, "wb") as file:
-        for ba in ba_rec:
-            file.write(ba)
+    return bytes(ba_rec)
