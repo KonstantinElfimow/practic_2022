@@ -61,12 +61,10 @@ def decode_from_png_to_jpeg_with_crc8(png_filename: str, jpeg_filename: str) -> 
         for x in range(width):
             p = line[x]
 
-            # формируем целое на основе трех байт rgb (старший байт будет нулевым)
-            color = p[0]  # r
-            color = (color << 8) | p[1]  # rg
-            color = (color << 8) | p[2]  # rgb
+            # формируем целое на основе трех байт rgb
+            color = int(p[0] * 65536 + p[1] * 256 + p[2])
 
-            b_color = int(color).to_bytes(length=3, byteorder="big", signed=False)
+            b_color = color.to_bytes(length=3, byteorder="big", signed=False)
             print(color, b_color)
             ba = _crc8(b_color)
             print(hex(ba))
