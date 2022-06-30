@@ -54,22 +54,24 @@ def decode_data_from_file_with_crc8(png_filename: str) -> bytes:
 
     # высота, ширина, rgb
     height, width, _rgb = matrix.shape
-    ba_rec = bytearray()
+    ba_rec = bytes()
 
     for y in range(height):
         line = matrix[y]
         for x in range(width):
             p = line[x]
 
-            # формируем целое на основе трех байт rgb
-            color = int(p[0] * 65536 + p[1] * 256 + p[2])
+            # формируем целое на основе трех байт rgb (старший байт будет нулевым)
+            color = p[0]  # r
+            color = (color << 8) | p[1]  # rg
+            color = (color << 8) | p[2]  # rgb
 
-            b_color = color.to_bytes(length=3, byteorder="big", signed=False)
+            b_color = int(color).to_bytes(length=3, byteorder="big", signed=False)
             print(color, b_color)
             ba = _crc8(b_color)
             print(hex(ba))
             ba = ba.to_bytes(length=1, byteorder="big", signed=False)
 
-            ba_rec.extend(ba)
+            ba_rec += ba
 
-    return bytes(ba_rec)
+    return ba_rec
