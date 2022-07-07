@@ -47,7 +47,7 @@ def _crc8(pc_block: bytes) -> int:
 def decode_data_from_file_with_crc8(png_filename: str) -> bytes:
     # Получим 3-мерную матрицу RGB из decrypted_PNG.png
     img = Image.open(png_filename).convert('RGB')
-    matrix = np.asarray(img, dtype=np.uint32)
+    matrix = np.asarray(img, dtype=np.uint8)
     img.close()
 
     # высота, ширина, rgb
