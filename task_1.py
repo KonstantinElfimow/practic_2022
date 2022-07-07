@@ -68,7 +68,7 @@ def filter_keys_by_frequency(dict_keys: dict, frequency: int) -> list:
     """ Фильтруем ключи, которые встречаются с определённой частотой. Записываем их в новый список """
     filtered_k = []
     for k, v in dict_keys.items():
-        if v == 2:
+        if v == frequency:
             filtered_k.append(k)
     return filtered_k
 
